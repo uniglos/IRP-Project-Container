@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class PortalPair : MonoBehaviour
 {
+    [SerializeField] private LayerMask transportLayers;
     [SerializeField] private float LODDistance = 1024f;
     [SerializeField] private Camera mainCam;
 
