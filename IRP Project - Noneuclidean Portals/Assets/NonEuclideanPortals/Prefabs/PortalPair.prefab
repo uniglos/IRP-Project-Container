@@ -61,7 +61,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9eba13f8f781e3d4c85e1223cf89d195, type: 2}
+  - {fileID: 2100000, guid: fc72e2bec66c97345b4b1f689781fba2, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -130,6 +130,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70a3c70e6f133b443b014adabd729a87, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  transportLayers:
+    serializedVersion: 2
+    m_Bits: 0
   LODDistance: 1024
   mainCam: {fileID: 0}
 --- !u!54 &8241376492521581759
@@ -220,7 +223,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 09418265cf92b8044bcd3206d0b90023, type: 2}
+  - {fileID: 2100000, guid: fc72e2bec66c97345b4b1f689781fba2, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

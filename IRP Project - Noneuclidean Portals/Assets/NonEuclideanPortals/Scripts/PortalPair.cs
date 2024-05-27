@@ -76,6 +76,9 @@ public class PortalPair : MonoBehaviour
 
         if (distanceToClosestPortal <= LODDistance)
         {
+            viewportA.GetComponent<MeshRenderer>().enabled = true;
+            viewportB.GetComponent<MeshRenderer>().enabled = true;
+
             UpdateCamera(camA, portalA, portalB, viewportA, viewportB);
             UpdateCamera(camB, portalB, portalA, viewportB, viewportA);
 
@@ -83,6 +86,11 @@ public class PortalPair : MonoBehaviour
             {
                 TeleportPlayer();
             }
+        }
+        else
+        {
+            viewportA.GetComponent<MeshRenderer>().enabled = false;
+            viewportB.GetComponent<MeshRenderer>().enabled = false;
         }
     }
 
