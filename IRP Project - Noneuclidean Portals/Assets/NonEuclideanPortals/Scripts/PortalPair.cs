@@ -1,11 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Net.NetworkInformation;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class PortalPair : MonoBehaviour
 {
-    [SerializeField] private float cullDistance = 0f;
+    [SerializeField] private float LODDistance = 1024f;
     [SerializeField] private Camera mainCam;
 
     // portal A
@@ -13,14 +14,12 @@ public class PortalPair : MonoBehaviour
     private GameObject viewportA;
     private Transform portalACollider;
     private Camera camA;
-    [SerializeField] private Material camMaterialA;
 
     // portal B
     private GameObject portalB;
     private GameObject viewportB;
     private Transform portalBCollider;
     private Camera camB;
-    [SerializeField] private Material camMaterialB;
 
     private Camera playerCamera;
     private GameObject playerObject;
@@ -53,11 +52,15 @@ public class PortalPair : MonoBehaviour
             camB.targetTexture.Release();
 		}
 
-		camA.targetTexture = new RenderTexture(Screen.width, Screen.height, 24);
-        camMaterialA.mainTexture = camA.targetTexture;
+        Material newMatA = new Material(Shader.Find("Unlit/ScreenCutoutShader"));
+        camA.targetTexture = new RenderTexture(Screen.width, Screen.height, 24);
+        newMatA.mainTexture = camA.targetTexture;
+        viewportA.GetComponent<Renderer>().material = newMatA;
 
-		camB.targetTexture = new RenderTexture(Screen.width, Screen.height, 24);
-        camMaterialB.mainTexture = camB.targetTexture;
+        Material newMatB = new Material(Shader.Find("Unlit/ScreenCutoutShader"));
+        camB.targetTexture = new RenderTexture(Screen.width, Screen.height, 24);
+        newMatB.mainTexture = camB.targetTexture;
+        viewportB.GetComponent<Renderer>().material = newMatB;
     }
 
     // Update is called once per frame
@@ -66,12 +69,19 @@ public class PortalPair : MonoBehaviour
         // Take the player camera offset from portal B and set the portal B's view camera under portal A to reflect that offset
         playerCamera = mainCam;
 
-        UpdateCamera(camA, portalA, portalB, viewportA, viewportB);
-        UpdateCamera(camB, portalB, portalA, viewportB, viewportA);
+        // Only do the following if the player is within range:
+        // Get distance to closest portal
+        float distanceToClosestPortal = Mathf.Max((playerCamera.transform.position - portalA.transform.position).magnitude, (playerCamera.transform.position - portalB.transform.position).magnitude);
 
-        if (tpPlayer)
+        if (distanceToClosestPortal <= LODDistance)
         {
-            TeleportPlayer();
+            UpdateCamera(camA, portalA, portalB, viewportA, viewportB);
+            UpdateCamera(camB, portalB, portalA, viewportB, viewportA);
+
+            if (tpPlayer)
+            {
+                TeleportPlayer();
+            }
         }
     }
 
@@ -81,7 +91,6 @@ public class PortalPair : MonoBehaviour
         Vector3 playerOffsetFromPortal = playerCamera.transform.position - portal.transform.position;
         Vector3 viewportOffset = (portal.transform.position - viewPort.transform.position);
         Vector3 otherViewportOffset = (otherViewPort.transform.position - otherPortal.transform.position);
-        Debug.Log(viewportOffset);
         cameraToUpdate.transform.position = otherPortal.transform.position + viewportOffset + playerOffsetFromPortal;
 
         float angularDifferenceBetweenPortalRotations = Quaternion.Angle(portal.transform.rotation, otherPortal.transform.rotation);
@@ -111,7 +120,6 @@ public class PortalPair : MonoBehaviour
         Vector3 playerPortalOffset = playerObject.transform.position - inCollider.transform.position;
         if (Vector3.Dot(inCollider.up, playerPortalOffset) < 0f)
         {
-            Debug.Log(Vector3.Dot(inCollider.up, playerPortalOffset));
             float rotationDiff = -Quaternion.Angle(inCollider.transform.rotation, outCollider.transform.rotation);
             rotationDiff += 180;
             playerObject.transform.Rotate(Vector3.up, rotationDiff);
@@ -126,7 +134,6 @@ public class PortalPair : MonoBehaviour
     // Teleporting the player if they step into the colliders
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log(other.tag);
         if(other.tag == "Player")
         {
             playerObject = other.gameObject;
