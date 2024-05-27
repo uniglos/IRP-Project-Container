@@ -37,3 +37,5 @@ Compatibility is built-in with the Unity Standard Assets first person controller
 Credits:
 ----
 - Portal cutout shader by Brackeys : (https://www.youtube.com/watch?v=cuQao3hEKfs)
+  This was used for improved rendering on the other side of portals.
+  While I wanted to spend more time trying to figure this out on my own, I was not making enough progress without it.
