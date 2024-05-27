@@ -9,24 +9,22 @@ public class PortalPair : MonoBehaviour
     [SerializeField] private Camera mainCam;
 
     // portal A
-    [SerializeField] private GameObject portalA;
-    [SerializeField] private GameObject viewportA;
-    [SerializeField] private Transform portalACollider;
-    [SerializeField] private Camera camA;
+    private GameObject portalA;
+    private GameObject viewportA;
+    private Transform portalACollider;
+    private Camera camA;
     [SerializeField] private Material camMaterialA;
 
     // portal B
-    [SerializeField] private GameObject portalB;
-    [SerializeField] private GameObject viewportB;
-    [SerializeField] private Transform portalBCollider;
-    [SerializeField] private Camera camB;
+    private GameObject portalB;
+    private GameObject viewportB;
+    private Transform portalBCollider;
+    private Camera camB;
     [SerializeField] private Material camMaterialB;
 
     private Camera playerCamera;
     private GameObject playerObject;
-    private bool tpPlayer = false;
-
-    [SerializeField] private Transform playr;
+    private bool tpPlayer = false; // Here to only teleport the player during Update() for stability (weird behaviour occurred without this)
 
     // Start is called before the first frame update
     void Start()
@@ -44,18 +42,20 @@ public class PortalPair : MonoBehaviour
         portalACollider = portalA.transform.Find("PortalColliderA");
         portalBCollider = portalB.transform.Find("PortalColliderB");
 
-        // Material setup
+        // Material and rendertexture setup - These types aren't garbage collected so release them when done!!
         if (camA.targetTexture != null)
 		{
-            camA.targetTexture.Release();
+            camA.targetTexture.Release(); 
 		}
-		camA.targetTexture = new RenderTexture(Screen.width, Screen.height, 24);
-        camMaterialA.mainTexture = camA.targetTexture;
 
-		if (camB.targetTexture != null)
+        if (camB.targetTexture != null)
 		{
             camB.targetTexture.Release();
 		}
+
+		camA.targetTexture = new RenderTexture(Screen.width, Screen.height, 24);
+        camMaterialA.mainTexture = camA.targetTexture;
+
 		camB.targetTexture = new RenderTexture(Screen.width, Screen.height, 24);
         camMaterialB.mainTexture = camB.targetTexture;
     }
