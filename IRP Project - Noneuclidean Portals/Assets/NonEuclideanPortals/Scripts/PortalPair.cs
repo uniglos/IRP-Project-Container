@@ -120,8 +120,7 @@ public class PortalPair : MonoBehaviour
         Vector3 playerPortalOffset = playerObject.transform.position - inCollider.transform.position;
         if (Vector3.Dot(inCollider.up, playerPortalOffset) < 0f)
         {
-            float rotationDiff = -Quaternion.Angle(inCollider.transform.rotation, outCollider.transform.rotation);
-            rotationDiff += 180;
+            float rotationDiff = Quaternion.Angle(outCollider.transform.rotation, inCollider.transform.rotation) + 180f;
             playerObject.transform.Rotate(Vector3.up, rotationDiff);
 
             Vector3 positionOffset = Quaternion.Euler(0f, rotationDiff, 0f) * playerPortalOffset;
